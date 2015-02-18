@@ -10,9 +10,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.neo4j.graphdb.index.BatchInserterIndexProvider;
+import org.neo4j.unsafe.batchinsert.BatchInserterIndexProvider;
 import org.neo4j.helpers.collection.MapUtil;
-import org.neo4j.kernel.impl.batchinsert.BatchInserterImpl;
+import org.neo4j.unsafe.batchinsert.BatchInserter;
 
 public class ReadNodesFromFileCommand implements FileImportCommand
 {
@@ -37,7 +37,7 @@ public class ReadNodesFromFileCommand implements FileImportCommand
 
     }
 
-    public void execute( BatchInserterImpl neo4j,
+    public void execute( BatchInserter neo4j,
             BatchInserterIndexProvider index, int stepSize )
     {
         System.out.println("Importing from " + nodeFile);
@@ -55,7 +55,7 @@ public class ReadNodesFromFileCommand implements FileImportCommand
         }
     }
 
-    protected void processBodyRecords( BatchInserterImpl neo4j,
+    protected void processBodyRecords( BatchInserter neo4j,
             BatchInserterIndexProvider index ) throws IOException
     {
         int lineCount = 0;
@@ -91,7 +91,7 @@ public class ReadNodesFromFileCommand implements FileImportCommand
 
     }
 
-    protected void processRecord( BatchInserterImpl neo4j,
+    protected void processRecord( BatchInserter neo4j,
             BatchInserterIndexProvider index, Map<String, Object> properties,
             String[] values )
     {

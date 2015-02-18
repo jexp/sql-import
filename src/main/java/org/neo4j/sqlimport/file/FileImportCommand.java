@@ -1,9 +1,9 @@
 package org.neo4j.sqlimport.file;
 
-import org.neo4j.graphdb.index.BatchInserterIndexProvider;
-import org.neo4j.kernel.impl.batchinsert.BatchInserterImpl;
+import org.neo4j.unsafe.batchinsert.BatchInserterIndexProvider;
+import org.neo4j.unsafe.batchinsert.BatchInserter;
 
 public interface FileImportCommand {
 
-	void execute(BatchInserterImpl neo, BatchInserterIndexProvider indexService, int stepSize);
+	void execute(BatchInserter neo, BatchInserterIndexProvider indexService, int stepSize);
 }

@@ -4,8 +4,8 @@ import java.io.File;
 import java.util.Map;
 
 import org.neo4j.graphdb.DynamicRelationshipType;
-import org.neo4j.graphdb.index.BatchInserterIndexProvider;
-import org.neo4j.kernel.impl.batchinsert.BatchInserterImpl;
+import org.neo4j.unsafe.batchinsert.BatchInserterIndexProvider;
+import org.neo4j.unsafe.batchinsert.BatchInserter;
 
 public class ReadRelationshipsFromFileCommand extends ReadNodesFromFileCommand
 {
@@ -20,7 +20,7 @@ public class ReadRelationshipsFromFileCommand extends ReadNodesFromFileCommand
     }
 
 
-    protected void processRecord( BatchInserterImpl neo4j,
+    protected void processRecord( BatchInserter neo4j,
             BatchInserterIndexProvider index, Map<String, Object> properties,
             String[] values )
     {

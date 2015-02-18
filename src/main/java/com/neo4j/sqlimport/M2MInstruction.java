@@ -3,10 +3,10 @@ package com.neo4j.sqlimport;
 import java.util.Map;
 
 import org.neo4j.graphdb.RelationshipType;
-import org.neo4j.graphdb.index.BatchInserterIndexProvider;
+import org.neo4j.unsafe.batchinsert.BatchInserterIndexProvider;
 import org.neo4j.helpers.collection.MapUtil;
-import org.neo4j.kernel.impl.batchinsert.BatchInserterImpl;
-import org.neo4j.kernel.impl.batchinsert.SimpleRelationship;
+import org.neo4j.unsafe.batchinsert.BatchInserter;
+import org.neo4j.unsafe.batchinsert.BatchRelationship;
 
 public class M2MInstruction extends LinkInstruction {
 
@@ -29,7 +29,7 @@ public class M2MInstruction extends LinkInstruction {
 	}
 
 	@Override
-	public void execute(BatchInserterImpl neo,
+	public void execute(BatchInserter neo,
 	        BatchInserterIndexProvider indexService) {
 		long start = System.currentTimeMillis();
 		long aggregationNodeId = SQLImporter.getOrCreateSubRefNode(fromAggregationName,
@@ -40,7 +40,7 @@ public class M2MInstruction extends LinkInstruction {
 			System.out.println("could not find aggregation node for "
 					+ fromAggregationName);
 		} else {
-			for (SimpleRelationship rel : neo
+			for (BatchRelationship rel : neo
 					.getRelationships(aggregationNodeId)) {
 				// don't traverse subref rel
 				if (rel.getType().name().equals(Relationships.IS_A.name())) {

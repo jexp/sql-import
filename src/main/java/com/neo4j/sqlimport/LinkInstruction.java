@@ -1,12 +1,12 @@
 package com.neo4j.sqlimport;
 
-import org.neo4j.graphdb.index.BatchInserterIndexProvider;
-import org.neo4j.kernel.impl.batchinsert.BatchInserterImpl;
+import org.neo4j.unsafe.batchinsert.BatchInserterIndexProvider;
+import org.neo4j.unsafe.batchinsert.BatchInserter;
 
 public abstract class LinkInstruction {
 
 
-	public abstract void execute(BatchInserterImpl neo,
+	public abstract void execute(BatchInserter neo,
 	        BatchInserterIndexProvider indexService);
 	
 	

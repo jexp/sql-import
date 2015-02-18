@@ -3,9 +3,9 @@ package com.neo4j.sqlimport;
 import java.util.HashMap;
 
 import org.neo4j.graphdb.RelationshipType;
-import org.neo4j.graphdb.index.BatchInserterIndexProvider;
+import org.neo4j.unsafe.batchinsert.BatchInserterIndexProvider;
 import org.neo4j.helpers.collection.MapUtil;
-import org.neo4j.kernel.impl.batchinsert.BatchInserter;
+import org.neo4j.unsafe.batchinsert.BatchInserter;
 
 public class ForeignKeyInstruction extends ImportInstruction
 {

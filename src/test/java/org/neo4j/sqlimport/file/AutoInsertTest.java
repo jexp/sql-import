@@ -10,10 +10,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.neo4j.graphdb.DynamicRelationshipType;
-import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.Relationship;
-import org.neo4j.graphdb.Transaction;
+import org.neo4j.graphdb.*;
+import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
 
 import com.neo4j.sqlimport.Relationships;
@@ -43,25 +41,24 @@ public class AutoInsertTest {
 		importer.autoLink("Author_Book","Author","AUTHOR_ID", "Book", "BOOK_ID", "author_of");
 		importer.startLinking();
 		//verify the results
-		EmbeddedGraphDatabase neo = new EmbeddedGraphDatabase(DB_DIR);
-		Transaction tx = neo.beginTx();
-		Node referenceNode = neo.getReferenceNode();
-		Iterator<Relationship> subrefs = referenceNode.getRelationships().iterator();
-		assertTrue(subrefs.hasNext());
-		Node pippi = neo.getNodeById(2);
-		assertTrue(pippi.hasProperty("BOOK_ID"));
-		assertTrue(pippi.hasRelationship(DynamicRelationshipType.withName("talks_about")));
-		assertTrue(pippi.hasRelationship(DynamicRelationshipType.withName("author_of")));
-		assertTrue(pippi.hasRelationship(Relationships.IS_A));
-		Assert.assertEquals("2009-05-13",pippi.getProperty("CREATED_DATE_TIME"));
-		Node test = neo.getNodeById(10);
-		Assert.assertEquals(" 2009-06-05",test.getProperty("DATE"));
-		Assert.assertEquals("some_proc('2009-06-05','RRRR-MM-DD')",test.getProperty("PROC"));
-		
-		tx.success();
-		tx.finish();
-		
-		
+		GraphDatabaseService neo = new GraphDatabaseFactory().newEmbeddedDatabase(DB_DIR);
+		try (Transaction tx = neo.beginTx()) {
+			Node referenceNode = neo.getNodeById(0);
+			Iterator<Relationship> subrefs = referenceNode.getRelationships().iterator();
+			assertTrue(subrefs.hasNext());
+			Node pippi = neo.getNodeById(2);
+			assertTrue(pippi.hasProperty("BOOK_ID"));
+			assertTrue(pippi.hasRelationship(DynamicRelationshipType.withName("talks_about")));
+			assertTrue(pippi.hasRelationship(DynamicRelationshipType.withName("author_of")));
+			assertTrue(pippi.hasRelationship(Relationships.IS_A));
+			Assert.assertEquals("2009-05-13", pippi.getProperty("CREATED_DATE_TIME"));
+			Node test = neo.getNodeById(10);
+			Assert.assertEquals(" 2009-06-05", test.getProperty("DATE"));
+			Assert.assertEquals("some_proc('2009-06-05','RRRR-MM-DD')", test.getProperty("PROC"));
+
+			tx.success();
+		}
+		neo.shutdown();
 	}
 
 	@After

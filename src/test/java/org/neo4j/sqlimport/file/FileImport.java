@@ -11,15 +11,16 @@ import java.util.Map;
 import org.junit.After;
 import org.junit.Before;
 import org.neo4j.graphdb.DynamicRelationshipType;
-import org.neo4j.graphdb.index.BatchInserterIndexProvider;
-import org.neo4j.index.impl.lucene.LuceneBatchInserterIndexProvider;
-import org.neo4j.kernel.impl.batchinsert.BatchInserterImpl;
+import org.neo4j.index.lucene.unsafe.batchinsert.LuceneBatchInserterIndexProvider;
+import org.neo4j.unsafe.batchinsert.BatchInserterIndexProvider;
+import org.neo4j.unsafe.batchinsert.BatchInserter;
+import org.neo4j.unsafe.batchinsert.BatchInserters;
 
 public class FileImport
 {
 
     private static final String TARGET_DIR = "target/neo4j";
-    private BatchInserterImpl neo4j;
+    private BatchInserter neo4j;
     private BatchInserterIndexProvider index;
     private File nodeFile;
     private File relFile;
@@ -51,7 +52,7 @@ public class FileImport
     @Before
     public void setUp() throws Exception
     {
-        neo4j = new BatchInserterImpl( TARGET_DIR );
+        neo4j = BatchInserters.inserter(TARGET_DIR);
         index = new LuceneBatchInserterIndexProvider( neo4j );
         stepSize = 10000;
     }

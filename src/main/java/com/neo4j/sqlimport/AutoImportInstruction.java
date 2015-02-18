@@ -1,10 +1,11 @@
 package com.neo4j.sqlimport;
 
+import org.neo4j.unsafe.batchinsert.BatchInserter;
+import org.neo4j.unsafe.batchinsert.BatchInserterIndexProvider;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 
-import org.neo4j.graphdb.index.BatchInserterIndexProvider;
-import org.neo4j.kernel.impl.batchinsert.BatchInserterImpl;
 
 public class AutoImportInstruction implements  Command {
 
@@ -12,10 +13,9 @@ public class AutoImportInstruction implements  Command {
 
 	public AutoImportInstruction(String fileName) {
 		this.fileName = fileName;;
-		// TODO Auto-generated constructor stub
 	}
 
-	public void execute(BatchInserterImpl neo, BatchInserterIndexProvider indexService) {
+	public void execute(BatchInserter neo, BatchInserterIndexProvider indexService) {
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(fileName));
 			// replace ,NULL, with ,'',

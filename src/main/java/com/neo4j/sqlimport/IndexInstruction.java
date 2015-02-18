@@ -2,10 +2,10 @@ package com.neo4j.sqlimport;
 
 import java.util.Map;
 
-import org.neo4j.graphdb.index.BatchInserterIndexProvider;
+import org.neo4j.unsafe.batchinsert.BatchInserterIndexProvider;
 import org.neo4j.helpers.collection.MapUtil;
-import org.neo4j.kernel.impl.batchinsert.BatchInserterImpl;
-import org.neo4j.kernel.impl.batchinsert.SimpleRelationship;
+import org.neo4j.unsafe.batchinsert.BatchInserter;
+import org.neo4j.unsafe.batchinsert.BatchRelationship;
 
 public class IndexInstruction implements Command {
 
@@ -20,10 +20,10 @@ public class IndexInstruction implements Command {
 				createindexName = SQLImporter.createindexName(toAggregationName, toIdField);
 	}
 
-	public void execute(BatchInserterImpl neo,
+	public void execute(BatchInserter neo,
 	        BatchInserterIndexProvider indexProvider) {
 		System.out.println("starting indexing " + createindexName);
-			for (SimpleRelationship rel : neo.getRelationships(SQLImporter.getOrCreateSubRefNode(
+			for (BatchRelationship rel : neo.getRelationships(SQLImporter.getOrCreateSubRefNode(
 					toAggregationName, neo))) {
 				if (rel.getType().name().equals(Relationships.IS_A.name())) {
 					Map<String, Object> nodeProperties = neo.getNodeProperties(rel

@@ -11,13 +11,11 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.neo4j.graphdb.DynamicRelationshipType;
-import org.neo4j.graphdb.index.BatchInserterIndexProvider;
-import org.neo4j.index.impl.lucene.LuceneBatchInserterIndexProvider;
-import org.neo4j.kernel.impl.batchinsert.BatchInserter;
-import org.neo4j.kernel.impl.batchinsert.BatchInserterImpl;
-import org.neo4j.kernel.impl.batchinsert.SimpleRelationship;
 
 import com.neo4j.sqlimport.Field.Type;
+import org.neo4j.index.lucene.unsafe.batchinsert.LuceneBatchInserterIndexProvider;
+import org.neo4j.unsafe.batchinsert.*;
+import org.neo4j.unsafe.batchinsert.BatchInserter;
 
 public class SQLImporter
 {
@@ -26,7 +24,7 @@ public class SQLImporter
     private ArrayList<ImportInstruction> instructions = new ArrayList<ImportInstruction>();
     private ArrayList<AutoImportInstruction> autoImportinstructions = new ArrayList<AutoImportInstruction>();
     private BatchInserterIndexProvider indexProvider;
-    private BatchInserterImpl neo;
+    private BatchInserter neo;
     private int oldcount = 0;
     private ArrayList<LinkInstruction> linkInstructions = new ArrayList<LinkInstruction>();
     private Map<String, IndexInstruction> indexInstructions = new HashMap<String, IndexInstruction>();
@@ -87,7 +85,7 @@ public class SQLImporter
     {
         long start = System.currentTimeMillis();
 
-        neo = new BatchInserterImpl( STORE_DIR );
+        neo = BatchInserters.inserter( STORE_DIR);
         indexProvider = new LuceneBatchInserterIndexProvider( neo );
         int nodecount = 0;
         try
@@ -216,7 +214,7 @@ public class SQLImporter
     {
         if ( neo == null )
         {
-            neo = new BatchInserterImpl( STORE_DIR );
+            neo = BatchInserters.inserter( STORE_DIR );
         }
         if ( indexProvider == null )
         {
@@ -294,8 +292,8 @@ public class SQLImporter
     {
         String subrefName = "subref_" + aggregationNodeName;
         long aggregationNodeId = -1;
-        Iterable<SimpleRelationship> relationships = neo.getRelationships( 0 );
-        for ( SimpleRelationship rel : relationships )
+        Iterable<BatchRelationship> relationships = neo.getRelationships( 0 );
+        for ( BatchRelationship rel : relationships )
         {
             if ( rel.getType().name().equals(
                     DynamicRelationshipType.withName( subrefName ).name() ) )
@@ -356,7 +354,7 @@ public class SQLImporter
     }
 
     static void createNode( Field[] fields, String line,
-            BatchInserterImpl neo2, long subrefId )
+            BatchInserter neo2, long subrefId )
     {
         String VALUES = "values(";
         int firstComma = line.indexOf( VALUES );
@@ -420,7 +418,7 @@ public class SQLImporter
     }
 
     public static long cerateOrFindSubrefNode( String tableName,
-            BatchInserterImpl neo )
+            BatchInserter neo )
     {
         long subRefNode = getOrCreateSubRefNode( tableName, neo );
         if ( subRefNode < 0 )

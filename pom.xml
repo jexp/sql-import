@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.neo4j</groupId>
 	<artifactId>sqlimporter</artifactId>
-	<version>2.1.6</version>
+	<version>2.2.0-M04</version>
 	<name>SQLImporter</name>
 	<dependencies>
 		<dependency>
@@ -15,7 +15,7 @@
 		<dependency>
 			<groupId>org.neo4j</groupId>
 			<artifactId>neo4j</artifactId>
-			<version>2.1.6</version>
+			<version>2.2.0-M04</version>
 		</dependency>
 	</dependencies>
 	<build>
